@@ -1,0 +1,13 @@
+These fonts are used in the on-site handmade UI. All are under the SIL Open Font License 1.1.
+
+- Caveat, by Impallari Type (https://fonts.google.com/specimen/Caveat)
+- Patrick Hand, by Patrick Wiegand (https://fonts.google.com/specimen/Patrick+Hand)
+- Special Elite, by Astigmatic (https://fonts.google.com/specimen/Special+Elite)
+
+SIL Open Font License: https://scripts.sil.org/OFL
+
+Fraunces and Source Sans 3 remain in this folder for optional typographic print use
+(New Art City panels). They are also under SIL OFL / OFL-compatible licenses:
+
+- Fraunces, by Undercase Type (https://fonts.google.com/specimen/Fraunces)
+- Source Sans 3, by Paul D. Hunt / Adobe (https://fonts.google.com/specimen/Source+Sans+3)

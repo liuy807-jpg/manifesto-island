@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#e8c8d8">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="Approach and Drift: walk an island of seven beliefs, then leave a picture that becomes an island in a shared sea.">
+  <meta property="og:title" content="My Manifesto — Approach: Island | Yuting Liu">
+  <meta property="og:description" content="A third-person island zine. Stay until the words clear, then send a picture out to sea for a stranger.">
+  <meta property="og:type" content="website">
+  <title>My Manifesto — Approach &amp; Drift | Yuting Liu</title>
+  <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml">
+  <style>
+    @font-face {
+      font-family: "Caveat";
+      src: url("%BASE_URL%fonts/Caveat.woff2") format("woff2");
+      font-weight: 400 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Patrick Hand";
+      src: url("%BASE_URL%fonts/PatrickHand.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Special Elite";
+      src: url("%BASE_URL%fonts/SpecialElite.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="view" aria-hidden="true"></canvas>
+
+  <svg class="ui-defs" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="ink-wobble" x="-8%" y="-8%" width="116%" height="116%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.07" numOctaves="2" seed="3" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="soft-grain">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="11" result="g"/>
+        <feColorMatrix in="g" type="luminanceToAlpha"/>
+        <feComponentTransfer>
+          <feFuncA type="table" tableValues="0 0.18"/>
+        </feComponentTransfer>
+        <feBlend in="SourceGraphic" mode="multiply"/>
+      </filter>
+      <!-- irregular paper silhouettes, stretched with preserveAspectRatio=none -->
+      <path id="paper-a" d="M10,14 L6,7 18,11 32,3 48,10 64,2 82,9 102,3 122,11 142,2 162,10 180,4 194,12 L198,26 192,40 199,56 191,70 198,84 188,96 L170,91 152,99 132,93 112,99 92,92 72,99 52,93 32,99 14,93 5,84 L9,70 3,54 11,38 4,24 Z"/>
+      <path id="paper-b" d="M8,11 L16,3 34,9 54,2 76,10 98,3 120,10 144,2 166,9 186,4 196,15 L199,32 193,50 198,70 192,86 184,97 L164,92 140,99 116,93 90,99 66,92 42,99 20,93 6,86 L3,68 10,50 3,32 8,18 Z"/>
+      <path id="paper-c" d="M7,16 L4,8 20,6 38,13 58,3 80,10 104,2 128,11 150,3 172,10 192,5 198,18 L195,36 200,54 193,74 198,90 186,98 L164,93 140,100 116,94 90,99 68,92 46,99 24,93 8,96 3,82 L8,64 2,46 9,28 Z"/>
+      <path id="paper-d" d="M11,8 L28,3 50,10 72,2 96,9 118,3 140,11 162,3 182,9 196,18 L199,38 193,58 199,76 190,94 L168,99 146,92 122,99 98,93 74,99 50,92 26,98 8,90 L3,72 10,54 3,36 8,18 Z"/>
+    </defs>
+    <symbol id="doodle-wave" viewBox="0 0 80 18">
+      <path d="M2,11 C10,4 16,15 24,9 C32,3 38,14 48,8 C56,3 64,13 78,7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M4,14 C12,9 20,16 30,12 C40,8 52,16 70,11" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+    </symbol>
+    <symbol id="doodle-boat" viewBox="0 0 36 28">
+      <path d="M8,20 C12,23 24,23 30,19 L26,22 C20,25 12,25 8,22 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M18,20 L18,5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M18,6 L27,16 L18,16 Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="doodle-star" viewBox="0 0 18 18">
+      <path d="M9,1.5 L10.2,7.2 L16.2,7 L11.2,10.4 L13.2,16 L9,12.8 L4.8,16 L6.8,10.4 L1.8,7 L7.8,7.2 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="doodle-asterisk" viewBox="0 0 14 14">
+      <path d="M7,1 L7,13 M2,3.5 L12,10.5 M12,3.5 L2,10.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <button id="gate" type="button" aria-busy="true" aria-label="Loading. Tap to come ashore when ready.">
+    <span class="gate-world-edge" aria-hidden="true"></span>
+    <div class="gate-sheet scrap">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-a" fill="#f6ecd6" stroke="#2a2218" stroke-width="1.7" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-tl" aria-hidden="true"></span>
+      <span class="tape tape-br" aria-hidden="true"></span>
+      <span class="stamp" aria-hidden="true">
+        <svg viewBox="0 0 52 52" aria-hidden="true">
+          <path d="M10,24 C9,12 18,6 27,6 C38,6 46,14 46,26 C46,38 36,47 26,47 C14,47 8,36 10,24 Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M13,25 C13,15 20,10 27,10 C36,10 42,17 42,26 C42,36 34,43 26,43 C16,43 12,35 13,25 Z" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.7"/>
+        </svg>
+        <em>zine</em>
+      </span>
+      <p class="gate-zh">Approach</p>
+      <svg class="doodle doodle-wave-lg" viewBox="0 0 80 18" aria-hidden="true"><use href="#doodle-wave"/></svg>
+      <p class="gate-kicker">Approach · Island</p>
+      <h1 class="gate-title">My Manifesto</h1>
+      <p id="gate-action">Looking for the island</p>
+      <svg class="doodle doodle-boat-lg" viewBox="0 0 36 28" aria-hidden="true"><use href="#doodle-boat"/></svg>
+    </div>
+  </button>
+
+  <div id="fail" hidden>
+    <p>This piece needs WebGL. Please open it in a current phone or desktop browser.</p>
+  </div>
+
+  <div id="chrome" class="ui-ignore">
+    <aside id="hud-place" class="scrap hud-box scrap-place">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-b" fill="#f7efd8" stroke="#2a2218" stroke-width="2.1" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-sm tape-top" aria-hidden="true"></span>
+      <p class="hud-kicker" id="place-kicker">Place</p>
+      <h2 id="place-name">The Shore</h2>
+      <p id="place-sub" hidden></p>
+    </aside>
+
+    <aside id="hud-objective" class="scrap hud-box scrap-objective">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-c" fill="#f3e2c6" stroke="#2a2218" stroke-width="2.1" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <svg class="doodle doodle-star-sm" viewBox="0 0 18 18" aria-hidden="true"><use href="#doodle-star"/></svg>
+      <p class="hud-kicker">Goal</p>
+      <p id="objective-text">Find the seven voices</p>
+      <p id="objective-sub" class="hud-sub" hidden></p>
+    </aside>
+
+    <div id="hud-right">
+      <button id="journal-btn" class="scrap hud-box scrap-journal" type="button" aria-label="Journal 0/7" aria-expanded="false">
+        <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+          <use href="#paper-d" fill="#f4e6cc" stroke="#2a2218" stroke-width="2.2" stroke-linejoin="round"/>
+        </svg>
+        <span class="scrap-grain" aria-hidden="true"></span>
+        <span class="notebook-spine" aria-hidden="true"></span>
+        <span class="hud-kicker">Journal</span>
+        <span id="journal-count">0/7</span>
+      </button>
+      <aside id="isle-count" class="scrap hud-box scrap-isles" hidden>
+        <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+          <use href="#paper-c" fill="#f6e6cc" stroke="#2a2218" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <span class="scrap-grain" aria-hidden="true"></span>
+        <span class="hud-kicker">Islands</span>
+        <span id="isle-count-num">0</span>
+      </aside>
+      <button id="mute" type="button" hidden aria-label="Mute music" aria-pressed="false">
+        <svg class="icon-on" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5,11 v6 h3.4 L13,21 V7 L8.4,11 H5z"/>
+          <path d="M17.2,10.2 c1.8,1.6 1.9,5.6 0,7.4"/>
+          <path d="M20.2,8 c3.1,2.6 3.2,9.2 0,11.8"/>
+        </svg>
+        <svg class="icon-off" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5,11 v6 h3.4 L13,21 V7 L8.4,11 H5z"/>
+          <path d="M17,11 l6,6 m0-6 l-6,6"/>
+        </svg>
+      </button>
+      <aside id="hud-help" class="scrap hud-box scrap-help">
+        <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+          <use href="#paper-b" fill="#efe4c8" stroke="#2a2218" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <span class="scrap-grain" aria-hidden="true"></span>
+        <p class="hint-desk">Click to walk · WASD · Q/E to look</p>
+        <p class="hint-touch">Tap to walk · stick to move · drag to look</p>
+      </aside>
+    </div>
+
+    <ol class="pips" aria-hidden="true">
+      <li class="pip" data-id="voices"></li>
+      <li class="pip" data-id="invisible"></li>
+      <li class="pip" data-id="bridge"></li>
+      <li class="pip" data-id="presence"></li>
+      <li class="pip" data-id="listening"></li>
+      <li class="pip" data-id="making"></li>
+      <li class="pip" data-id="freedom"></li>
+    </ol>
+
+    <article id="card" class="scrap" aria-live="polite">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-a" fill="#f8f0dc" stroke="#2a2218" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-sm tape-card" aria-hidden="true"></span>
+      <svg class="doodle doodle-wave-card" viewBox="0 0 80 18" aria-hidden="true"><use href="#doodle-wave"/></svg>
+      <header class="card-head">
+        <p id="card-num">01</p>
+        <p id="card-name">The Listening Basin</p>
+        <button id="speak" type="button" aria-label="Listen to this statement">
+          <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <path d="M5,11 v6 h3.4 L13,21 V7 L8.4,11 H5z"/>
+            <path d="M17.2,10.2 c1.8,1.6 1.9,5.6 0,7.4"/>
+            <path d="M20.2,8 c3.1,2.6 3.2,9.2 0,11.8"/>
+          </svg>
+        </button>
+      </header>
+      <h2 id="card-headline"></h2>
+      <p id="card-excerpt"></p>
+      <button id="more" type="button" aria-haspopup="dialog">read more</button>
+      <button id="card-continue" type="button" hidden>Continue · Drift</button>
+    </article>
+
+    <p id="hint" class="scrap scrap-hint">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-c" fill="#f3e7cc" stroke="#2a2218" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="hint-desk">Click the ground to walk, or use WASD. Stay with a place until the words clear.</span>
+      <span class="hint-touch">Tap the ground to walk, or use the stick. Stay with a place until the words clear.</span>
+    </p>
+
+    <div id="joystick" class="joystick" aria-hidden="true">
+      <svg class="joystick-ring" viewBox="0 0 112 112" aria-hidden="true">
+        <path d="M18,54 C18,28 34,16 56,15 C82,14 96,32 97,56 C98,82 80,98 56,97 C30,96 17,78 18,54 Z" fill="#f6edd8" stroke="#2a2218" stroke-width="2.2"/>
+        <path d="M30,55 C30,38 42,30 56,29 C72,28 82,40 83,56 C84,73 72,84 56,83 C40,82 29,71 30,55 Z" fill="none" stroke="#2a2218" stroke-width="1.2" opacity="0.55"/>
+      </svg>
+      <div class="joystick-knob"></div>
+    </div>
+
+    <aside id="drift" class="scrap" hidden>
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-d" fill="#f7eed8" stroke="#2a2218" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-tl" aria-hidden="true"></span>
+      <svg class="doodle doodle-boat-lg" viewBox="0 0 48 36" aria-hidden="true"><use href="#doodle-boat"/></svg>
+      <p class="drift-kicker" id="drift-kicker">Chapter 2 · Drift</p>
+      <h2 class="drift-title" id="drift-title">Drift</h2>
+      <p class="drift-lead" id="drift-lead">When you are ready, give the boat a picture you refuse to give up, and let it find the next person.</p>
+      <p class="drift-count" id="drift-count">Islands 0</p>
+      <button id="drift-cta" type="button">Leave a picture</button>
+      <button id="drift-reread" type="button">Reread the statement</button>
+      <p id="drift-status" hidden></p>
+    </aside>
+
+    <aside id="islet-card" class="scrap" hidden>
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-b" fill="#f8f1de" stroke="#2a2218" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-sm tape-card" aria-hidden="true"></span>
+      <p class="drift-kicker" id="islet-from"></p>
+      <p id="islet-text"></p>
+      <p id="islet-en" hidden></p>
+      <div class="islet-actions">
+        <button id="islet-close" type="button">Close</button>
+        <button id="islet-hide" type="button" hidden>Hide</button>
+        <button id="islet-unhide" type="button" hidden>Unhide</button>
+      </div>
+    </aside>
+  </div>
+
+  <div id="journal" hidden role="dialog" aria-modal="true" aria-labelledby="journal-title">
+    <div class="journal-book">
+      <div class="journal-bind" aria-hidden="true"></div>
+      <div class="journal-page">
+        <span class="scrap-grain" aria-hidden="true"></span>
+        <header class="journal-head">
+          <div>
+            <p class="hud-kicker">Journal</p>
+            <h2 id="journal-title">Seven voices</h2>
+          </div>
+          <button id="journal-close" type="button">Close</button>
+        </header>
+        <ol id="journal-list"></ol>
+      </div>
+    </div>
+  </div>
+
+  <div id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-panel scrap">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-a" fill="#f8f1de" stroke="#2a2218" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-sm tape-top" aria-hidden="true"></span>
+      <p id="sheet-num"></p>
+      <h3 id="sheet-title"></h3>
+      <p id="sheet-body"></p>
+      <button id="sheet-close" type="button">close</button>
+    </div>
+  </div>
+
+
+  <div id="compose" class="modal-layer" hidden role="dialog" aria-modal="true" aria-labelledby="compose-title">
+    <form id="compose-form" class="compose-panel scrap">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-a" fill="#f8f0dc" stroke="#2a2218" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-tl" aria-hidden="true"></span>
+      <p class="drift-kicker">Drift</p>
+      <h2 id="compose-title">Leave a picture</h2>
+      <p class="compose-q">When you are stuck, what picture would you refuse to give up?</p>
+      <label class="compose-name-label" for="compose-text">Your picture</label>
+      <textarea id="compose-text" name="text" maxlength="80" rows="3" required placeholder="One line is enough."></textarea>
+      <p id="compose-count">0 / 80</p>
+      <label class="compose-name-label" for="compose-name">A name or initial, or leave it anonymous</label>
+      <input id="compose-name" name="name" maxlength="20" type="text" placeholder="Anonymous" autocomplete="nickname">
+      <p class="compose-privacy">This line will appear in public on a small island at sea. You may stay anonymous. Please do not leave a URL or anything that would identify you.</p>
+      <p id="compose-error" hidden></p>
+      <div class="compose-actions">
+        <button id="compose-send" type="submit">Fold it into a paper boat</button>
+        <button id="compose-cancel" type="button">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="receive" class="modal-layer" hidden role="dialog" aria-modal="true" aria-labelledby="receive-title">
+    <div class="compose-panel scrap receive-panel">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-d" fill="#f4ead0" stroke="#2a2218" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-tl" aria-hidden="true"></span>
+      <p class="drift-kicker" id="receive-kicker">A line has washed ashore</p>
+      <h2 id="receive-title">A note from the sea</h2>
+      <p id="receive-text"></p>
+      <p id="receive-en" hidden></p>
+      <p id="receive-from" class="receive-from"></p>
+      <p id="receive-note" hidden></p>
+      <button id="receive-close" type="button">Next · Landing</button>
+    </div>
+  </div>
+
+  <div id="landing" class="modal-layer" hidden role="dialog" aria-modal="true" aria-labelledby="landing-title">
+    <div class="compose-panel scrap landing-panel">
+      <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <use href="#paper-c" fill="#f7eed8" stroke="#2a2218" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <span class="scrap-grain" aria-hidden="true"></span>
+      <span class="tape tape-tl" aria-hidden="true"></span>
+      <p class="drift-kicker">Chapter 3 · Preview</p>
+      <h2 id="landing-title">Landing</h2>
+      <p class="landing-lead">Landing will let a small boat, carrying someone else's line, drift into the room you are standing in. This chapter is still being made. It will open through the camera on your phone.</p>
+      <p id="landing-note" hidden>The picture you just wrote is only on this device for now.</p>
+      <button id="landing-close" type="button">Back to the island</button>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
