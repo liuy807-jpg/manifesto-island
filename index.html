@@ -80,7 +80,7 @@
 
   <button id="gate" type="button" aria-busy="true" aria-label="Loading. Tap to come ashore when ready.">
     <span class="gate-world-edge" aria-hidden="true"></span>
-    <div class="gate-sheet scrap">
+    <div class="gate-sheet scrap paper-frame">
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-a" fill="#f6ecd6" stroke="#2a2218" stroke-width="1.7" stroke-linejoin="round"/>
       </svg>
@@ -94,12 +94,14 @@
         </svg>
         <em>zine</em>
       </span>
-      <p class="gate-zh">Approach</p>
-      <svg class="doodle doodle-wave-lg" viewBox="0 0 80 18" aria-hidden="true"><use href="#doodle-wave"/></svg>
-      <p class="gate-kicker">Approach · Island</p>
-      <h1 class="gate-title">My Manifesto</h1>
-      <p id="gate-action">Looking for the island</p>
-      <svg class="doodle doodle-boat-lg" viewBox="0 0 36 28" aria-hidden="true"><use href="#doodle-boat"/></svg>
+      <div class="paper-inner">
+        <p class="gate-zh">Approach</p>
+        <svg class="doodle doodle-wave-lg" viewBox="0 0 80 18" aria-hidden="true"><use href="#doodle-wave"/></svg>
+        <p class="gate-kicker">Approach · Island</p>
+        <h1 class="gate-title">My Manifesto</h1>
+        <p id="gate-action">Looking for the island</p>
+        <svg class="doodle doodle-boat-lg" viewBox="0 0 36 28" aria-hidden="true"><use href="#doodle-boat"/></svg>
+      </div>
     </div>
   </button>
 
@@ -179,28 +181,32 @@
       <li class="pip" data-id="freedom"></li>
     </ol>
 
-    <article id="card" class="scrap" aria-live="polite">
+    <article id="card" class="scrap paper-frame" aria-live="polite">
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-a" fill="#f8f0dc" stroke="#2a2218" stroke-width="1.6" stroke-linejoin="round"/>
       </svg>
       <span class="scrap-grain" aria-hidden="true"></span>
       <span class="tape tape-sm tape-card" aria-hidden="true"></span>
       <svg class="doodle doodle-wave-card" viewBox="0 0 80 18" aria-hidden="true"><use href="#doodle-wave"/></svg>
-      <header class="card-head">
-        <p id="card-num">01</p>
-        <p id="card-name">The Listening Basin</p>
-        <button id="speak" type="button" aria-label="Listen to this statement">
-          <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
-            <path d="M5,11 v6 h3.4 L13,21 V7 L8.4,11 H5z"/>
-            <path d="M17.2,10.2 c1.8,1.6 1.9,5.6 0,7.4"/>
-            <path d="M20.2,8 c3.1,2.6 3.2,9.2 0,11.8"/>
-          </svg>
-        </button>
-      </header>
-      <h2 id="card-headline"></h2>
-      <p id="card-excerpt"></p>
-      <button id="more" type="button" aria-haspopup="dialog">read more</button>
-      <button id="card-continue" type="button" hidden>Continue · Drift</button>
+      <div class="paper-inner">
+        <header class="card-head">
+          <p id="card-num">01</p>
+          <p id="card-name">The Listening Basin</p>
+          <button id="speak" type="button" aria-label="Listen to this statement">
+            <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <path d="M5,11 v6 h3.4 L13,21 V7 L8.4,11 H5z"/>
+              <path d="M17.2,10.2 c1.8,1.6 1.9,5.6 0,7.4"/>
+              <path d="M20.2,8 c3.1,2.6 3.2,9.2 0,11.8"/>
+            </svg>
+          </button>
+        </header>
+        <div class="paper-scroll">
+          <h2 id="card-headline"></h2>
+          <p id="card-excerpt"></p>
+        </div>
+        <button id="more" type="button" aria-haspopup="dialog">read more</button>
+        <button id="card-continue" type="button" hidden>Continue · Drift</button>
+      </div>
     </article>
 
     <p id="hint" class="scrap scrap-hint">
@@ -220,35 +226,43 @@
       <div class="joystick-knob"></div>
     </div>
 
-    <aside id="drift" class="scrap" hidden>
+    <aside id="drift" class="scrap paper-frame" hidden>
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-d" fill="#f7eed8" stroke="#2a2218" stroke-width="1.6" stroke-linejoin="round"/>
       </svg>
       <span class="scrap-grain" aria-hidden="true"></span>
       <span class="tape tape-tl" aria-hidden="true"></span>
       <svg class="doodle doodle-boat-lg" viewBox="0 0 48 36" aria-hidden="true"><use href="#doodle-boat"/></svg>
-      <p class="drift-kicker" id="drift-kicker">Chapter 2 · Drift</p>
-      <h2 class="drift-title" id="drift-title">Drift</h2>
-      <p class="drift-lead" id="drift-lead">When you are ready, give the boat a picture you refuse to give up, and let it find the next person.</p>
-      <p class="drift-count" id="drift-count">Islands 0</p>
-      <button id="drift-cta" type="button">Leave a picture</button>
-      <button id="drift-reread" type="button">Reread the statement</button>
-      <p id="drift-status" hidden></p>
+      <div class="paper-inner">
+        <p class="drift-kicker" id="drift-kicker">Chapter 2 · Drift</p>
+        <div class="paper-scroll">
+          <h2 class="drift-title" id="drift-title">Drift</h2>
+          <p class="drift-lead" id="drift-lead">When you are ready, give the boat a picture you refuse to give up, and let it find the next person.</p>
+          <p class="drift-count" id="drift-count">Islands 0</p>
+          <p id="drift-status" hidden></p>
+        </div>
+        <button id="drift-cta" type="button">Leave a picture</button>
+        <button id="drift-reread" type="button">Reread the statement</button>
+      </div>
     </aside>
 
-    <aside id="islet-card" class="scrap" hidden>
+    <aside id="islet-card" class="scrap paper-frame" hidden>
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-b" fill="#f8f1de" stroke="#2a2218" stroke-width="1.6" stroke-linejoin="round"/>
       </svg>
       <span class="scrap-grain" aria-hidden="true"></span>
       <span class="tape tape-sm tape-card" aria-hidden="true"></span>
-      <p class="drift-kicker" id="islet-from"></p>
-      <p id="islet-text"></p>
-      <p id="islet-en" hidden></p>
-      <div class="islet-actions">
-        <button id="islet-close" type="button">Close</button>
-        <button id="islet-hide" type="button" hidden>Hide</button>
-        <button id="islet-unhide" type="button" hidden>Unhide</button>
+      <div class="paper-inner">
+        <p class="drift-kicker" id="islet-from"></p>
+        <div class="paper-scroll">
+          <p id="islet-text"></p>
+          <p id="islet-en" hidden></p>
+        </div>
+        <div class="islet-actions">
+          <button id="islet-close" type="button">Close</button>
+          <button id="islet-hide" type="button" hidden>Hide</button>
+          <button id="islet-unhide" type="button" hidden>Unhide</button>
+        </div>
       </div>
     </aside>
   </div>
@@ -265,79 +279,97 @@
           </div>
           <button id="journal-close" type="button">Close</button>
         </header>
-        <ol id="journal-list"></ol>
+        <div class="paper-scroll">
+          <ol id="journal-list"></ol>
+        </div>
       </div>
     </div>
   </div>
 
   <div id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-    <div class="sheet-panel scrap">
+    <div class="sheet-panel scrap paper-frame">
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-a" fill="#f8f1de" stroke="#2a2218" stroke-width="1.4" stroke-linejoin="round"/>
       </svg>
       <span class="scrap-grain" aria-hidden="true"></span>
       <span class="tape tape-sm tape-top" aria-hidden="true"></span>
-      <p id="sheet-num"></p>
-      <h3 id="sheet-title"></h3>
-      <p id="sheet-body"></p>
-      <button id="sheet-close" type="button">close</button>
+      <div class="paper-inner">
+        <p id="sheet-num"></p>
+        <h3 id="sheet-title"></h3>
+        <div class="paper-scroll">
+          <p id="sheet-body"></p>
+        </div>
+        <button id="sheet-close" type="button">close</button>
+      </div>
     </div>
   </div>
 
 
   <div id="compose" class="modal-layer" hidden role="dialog" aria-modal="true" aria-labelledby="compose-title">
-    <form id="compose-form" class="compose-panel scrap">
+    <form id="compose-form" class="compose-panel scrap paper-frame">
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-a" fill="#f8f0dc" stroke="#2a2218" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
       <span class="scrap-grain" aria-hidden="true"></span>
       <span class="tape tape-tl" aria-hidden="true"></span>
-      <p class="drift-kicker">Drift</p>
-      <h2 id="compose-title">Leave a picture</h2>
-      <p class="compose-q">When you are stuck, what picture would you refuse to give up?</p>
-      <label class="compose-name-label" for="compose-text">Your picture</label>
-      <textarea id="compose-text" name="text" maxlength="80" rows="3" required placeholder="One line is enough."></textarea>
-      <p id="compose-count">0 / 80</p>
-      <label class="compose-name-label" for="compose-name">A name or initial, or leave it anonymous</label>
-      <input id="compose-name" name="name" maxlength="20" type="text" placeholder="Anonymous" autocomplete="nickname">
-      <p class="compose-privacy">This line will appear in public on a small island at sea. You may stay anonymous. Please do not leave a URL or anything that would identify you.</p>
-      <p id="compose-error" hidden></p>
-      <div class="compose-actions">
-        <button id="compose-send" type="submit">Fold it into a paper boat</button>
-        <button id="compose-cancel" type="button">Cancel</button>
+      <div class="paper-inner">
+        <div class="paper-scroll">
+          <p class="drift-kicker">Drift</p>
+          <h2 id="compose-title">Leave a picture</h2>
+          <p class="compose-q">When you are stuck, what picture would you refuse to give up?</p>
+          <label class="compose-name-label" for="compose-text">Your picture</label>
+          <textarea id="compose-text" name="text" maxlength="80" rows="3" required placeholder="One line is enough."></textarea>
+          <p id="compose-count">0 / 80</p>
+          <label class="compose-name-label" for="compose-name">A name or initial, or leave it anonymous</label>
+          <input id="compose-name" name="name" maxlength="20" type="text" placeholder="Anonymous" autocomplete="nickname">
+          <p class="compose-privacy">This line will appear in public on a small island at sea. You may stay anonymous. Please do not leave a URL or anything that would identify you.</p>
+          <p id="compose-error" hidden></p>
+        </div>
+        <div class="compose-actions">
+          <button id="compose-send" type="submit">Fold it into a paper boat</button>
+          <button id="compose-cancel" type="button">Cancel</button>
+        </div>
       </div>
     </form>
   </div>
 
   <div id="receive" class="modal-layer" hidden role="dialog" aria-modal="true" aria-labelledby="receive-title">
-    <div class="compose-panel scrap receive-panel">
+    <div class="compose-panel scrap receive-panel paper-frame">
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-d" fill="#f4ead0" stroke="#2a2218" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
       <span class="scrap-grain" aria-hidden="true"></span>
       <span class="tape tape-tl" aria-hidden="true"></span>
-      <p class="drift-kicker" id="receive-kicker">A line has washed ashore</p>
-      <h2 id="receive-title">A note from the sea</h2>
-      <p id="receive-text"></p>
-      <p id="receive-en" hidden></p>
-      <p id="receive-from" class="receive-from"></p>
-      <p id="receive-note" hidden></p>
-      <button id="receive-close" type="button">Next · Landing</button>
+      <div class="paper-inner">
+        <div class="paper-scroll">
+          <p class="drift-kicker" id="receive-kicker">A line has washed ashore</p>
+          <h2 id="receive-title">A note from the sea</h2>
+          <p id="receive-text"></p>
+          <p id="receive-en" hidden></p>
+          <p id="receive-from" class="receive-from"></p>
+          <p id="receive-note" hidden></p>
+        </div>
+        <button id="receive-close" type="button">Next · Landing</button>
+      </div>
     </div>
   </div>
 
   <div id="landing" class="modal-layer" hidden role="dialog" aria-modal="true" aria-labelledby="landing-title">
-    <div class="compose-panel scrap landing-panel">
+    <div class="compose-panel scrap landing-panel paper-frame">
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
         <use href="#paper-c" fill="#f7eed8" stroke="#2a2218" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
       <span class="scrap-grain" aria-hidden="true"></span>
       <span class="tape tape-tl" aria-hidden="true"></span>
-      <p class="drift-kicker">Chapter 3 · Preview</p>
-      <h2 id="landing-title">Landing</h2>
-      <p class="landing-lead">Landing will let a small boat, carrying someone else's line, drift into the room you are standing in. This chapter is still being made. It will open through the camera on your phone.</p>
-      <p id="landing-note" hidden>The picture you just wrote is only on this device for now.</p>
-      <button id="landing-close" type="button">Back to the island</button>
+      <div class="paper-inner">
+        <div class="paper-scroll">
+          <p class="drift-kicker">Chapter 3 · Preview</p>
+          <h2 id="landing-title">Landing</h2>
+          <p class="landing-lead">Landing will let a small boat, carrying someone else's line, drift into the room you are standing in. This chapter is still being made. It will open through the camera on your phone.</p>
+          <p id="landing-note" hidden>The picture you just wrote is only on this device for now.</p>
+        </div>
+        <button id="landing-close" type="button">Back to the island</button>
+      </div>
     </div>
   </div>
 

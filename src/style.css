@@ -17,6 +17,12 @@
   --pad-x: clamp(0.7rem, 3vw, 1.5rem);
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  /* Insets clear the torn SVG silhouette (~6% of the frame) plus the ink-wobble filter. */
+  --frame-inset-x: clamp(1.25rem, 7vw, 2rem);
+  --frame-inset-y: clamp(1.35rem, 5.5vh, 2.15rem);
+  --frame-margin: clamp(0.75rem, 4.5vw, 1.5rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -30,6 +36,7 @@ html, body {
   width: 100%;
   height: 100%;
   height: 100svh;
+  height: 100dvh;
   background: #e8c8d8;
   color: var(--ink);
   font-family: var(--font-note);
@@ -166,8 +173,10 @@ html, body {
 #gate:disabled { cursor: default; }
 
 .gate-sheet {
-  width: min(26.5rem, 86vw);
-  padding: 2.4rem 2.1rem 1.8rem 2.3rem;
+  width: min(26.5rem, calc(100vw - var(--safe-l) - var(--safe-r) - 2 * var(--frame-margin)));
+  max-height: min(88dvh, calc(100dvh - var(--safe-t) - var(--safe-b) - 2 * var(--frame-margin)));
+  overflow: hidden;
+  padding: 0;
   transform: rotate(-1.4deg);
   text-align: left;
 }
@@ -436,12 +445,14 @@ html, body {
   position: absolute;
   left: 46%;
   bottom: calc(var(--safe-b) + 4.8rem);
-  width: min(34rem, calc(100% - 2 * var(--pad-x)));
+  width: min(34rem, calc(100% - var(--safe-l) - var(--safe-r) - 2 * var(--frame-margin)));
   transform: translate(-50%, 14px) rotate(-0.8deg);
   opacity: 0;
   pointer-events: none;
   text-align: left;
-  padding: 1.15rem 1.3rem 1.05rem 1.35rem;
+  padding: 0;
+  overflow: hidden;
+  max-height: min(58dvh, calc(100dvh - var(--safe-t) - var(--safe-b) - 7.5rem));
   transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
   color: var(--ink);
   /* faint notebook rules */
@@ -690,7 +701,7 @@ body.is-finale-open #drift {
   background: rgba(60, 42, 36, 0.22);
   display: grid;
   place-items: center;
-  padding: var(--pad-x);
+  padding: calc(var(--safe-t) + var(--frame-margin)) calc(var(--safe-r) + var(--frame-margin)) calc(var(--safe-b) + var(--frame-margin)) calc(var(--safe-l) + var(--frame-margin));
   opacity: 0;
   transition: opacity 0.3s var(--ease-out);
   pointer-events: none;
@@ -703,8 +714,9 @@ body.is-finale-open #drift {
 
 .journal-book {
   width: min(38rem, 100%);
-  max-height: min(84vh, 44rem);
+  max-height: min(86dvh, calc(100dvh - var(--safe-t) - var(--safe-b) - 2 * var(--frame-margin)));
   display: flex;
+  overflow: hidden;
   transform: rotate(-0.8deg);
   filter: drop-shadow(4px 8px 0 rgba(42, 34, 24, 0.12));
   clip-path: polygon(1.2% 1.8%, 4% 0, 18% 1.2%, 40% 0.2%, 62% 1.4%, 84% 0, 97% 1.6%, 100% 6%, 98.5% 28%, 100% 52%, 98% 78%, 100% 96%, 94% 100%, 70% 98%, 48% 100%, 22% 97.5%, 4% 100%, 0 94%, 1.5% 70%, 0 42%, 1.8% 16%);
@@ -727,8 +739,11 @@ body.is-finale-open #drift {
 .journal-page {
   position: relative;
   flex: 1;
-  overflow: auto;
-  padding: 1.2rem 1.2rem 1.4rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 1.55rem var(--frame-inset-x) 1.5rem 1.5rem;
   background:
     repeating-linear-gradient(
       to bottom,
@@ -777,7 +792,7 @@ body.is-finale-open #drift {
   display: grid;
   grid-template-columns: 2.1rem 1fr;
   gap: 0.45rem 0.55rem;
-  padding: 0.55rem 0.7rem 0.6rem;
+  padding: 0.7rem 1rem 0.75rem 0.9rem;
   border: 0;
   background: #fff8ea;
   position: relative;
@@ -838,8 +853,8 @@ body.is-finale-open #drift {
   z-index: 15;
   background: rgba(60, 42, 36, 0.22);
   display: grid;
-  place-items: end center;
-  padding: 0;
+  place-items: center;
+  padding: calc(var(--safe-t) + var(--frame-margin)) calc(var(--safe-r) + var(--frame-margin)) calc(var(--safe-b) + var(--frame-margin)) calc(var(--safe-l) + var(--frame-margin));
   opacity: 0;
   transition: opacity 0.4s var(--ease-out);
   pointer-events: none;
@@ -851,9 +866,9 @@ body.is-finale-open #drift {
 #sheet[hidden] { display: none; }
 .sheet-panel {
   width: min(40rem, 100%);
-  max-height: min(78vh, 40rem);
-  overflow: auto;
-  padding: 1.7rem var(--pad-x) calc(var(--safe-b) + 1.6rem);
+  max-height: min(82dvh, calc(100dvh - var(--safe-t) - var(--safe-b) - 2 * var(--frame-margin)));
+  overflow: hidden;
+  padding: 0;
   transform: translateY(16px) rotate(-0.4deg);
   transition: transform 0.45s var(--ease-out);
   user-select: text;
@@ -954,8 +969,10 @@ body.is-finale-open #drift {
   left: 46%;
   bottom: calc(var(--safe-b) + 4.8rem);
   transform: translate(-50%, 14px) rotate(-0.7deg);
-  width: min(34rem, calc(100% - 2 * var(--pad-x)));
-  padding: 1.2rem 1.35rem 1.1rem 1.45rem;
+  width: min(34rem, calc(100% - var(--safe-l) - var(--safe-r) - 2 * var(--frame-margin)));
+  padding: 0;
+  overflow: hidden;
+  max-height: min(58dvh, calc(100dvh - var(--safe-t) - var(--safe-b) - 7.5rem));
 }
 body.is-finale-open #drift {
   transform: translate(-50%, 0) rotate(-0.7deg);
@@ -988,9 +1005,11 @@ body.is-finale-open #drift {
   position: absolute;
   left: 46%;
   bottom: calc(var(--safe-b) + 4.8rem);
-  width: min(32rem, calc(100% - 2 * var(--pad-x)));
+  width: min(32rem, calc(100% - var(--safe-l) - var(--safe-r) - 2 * var(--frame-margin)));
   transform: translate(-50%, 14px) rotate(0.6deg);
-  padding: 1.15rem 1.3rem 1.05rem 1.35rem;
+  padding: 0;
+  overflow: hidden;
+  max-height: min(58dvh, calc(100dvh - var(--safe-t) - var(--safe-b) - 7.5rem));
   opacity: 0;
   pointer-events: none;
   z-index: 6;
@@ -1057,9 +1076,14 @@ body.is-islet-open #hint {
   visibility: hidden;
 }
 body.is-modal #joystick,
-body.is-cinema #joystick {
-  opacity: 0;
-  pointer-events: none;
+body.is-cinema #joystick,
+body.is-sheet-open #joystick,
+body.is-journal-open #joystick,
+body.is-islet-open #joystick,
+body.is-finale-open #joystick {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .modal-layer {
@@ -1069,7 +1093,7 @@ body.is-cinema #joystick {
   background: rgba(60, 42, 36, 0.28);
   display: grid;
   place-items: center;
-  padding: calc(var(--safe-t) + 1rem) var(--pad-x) calc(var(--safe-b) + 1rem);
+  padding: calc(var(--safe-t) + var(--frame-margin)) calc(var(--safe-r) + var(--frame-margin)) calc(var(--safe-b) + var(--frame-margin)) calc(var(--safe-l) + var(--frame-margin));
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s var(--ease-out);
@@ -1080,12 +1104,11 @@ body.is-cinema #joystick {
 }
 .compose-panel {
   width: min(28rem, 100%);
-  padding: 1.85rem 1.6rem 1.4rem 1.75rem;
+  padding: 0;
   transform: rotate(-0.6deg);
   text-align: left;
-  max-height: min(92svh, 40rem);
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  max-height: min(86dvh, calc(100dvh - var(--safe-t) - var(--safe-b) - 2 * var(--frame-margin)));
+  overflow: hidden;
   touch-action: auto;
   user-select: text;
   -webkit-user-select: text;
@@ -1197,7 +1220,8 @@ body.is-cinema #isle-count { opacity: 0; }
   font-family: var(--font-zh-ui), var(--font-type);
 }
 
-body.is-modal, body.is-compose-open, body.is-receive-open, body.is-landing-open {
+body.is-modal, body.is-compose-open, body.is-receive-open, body.is-landing-open,
+body.is-sheet-open, body.is-journal-open {
   touch-action: auto;
   user-select: text;
   -webkit-user-select: text;
@@ -1211,3 +1235,110 @@ body.is-modal, body.is-compose-open, body.is-receive-open, body.is-landing-open 
 }
 
 .compose-panel .drift-kicker { margin: 0.1rem 0 0.35rem 0.45rem; }
+
+
+/* ---------- Paper frames: text always stays inside the torn edge ---------- */
+
+.paper-frame {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.paper-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 auto;
+  padding: var(--frame-inset-y) var(--frame-inset-x);
+  max-width: 100%;
+}
+
+#card .paper-inner,
+#drift .paper-inner,
+#islet-card .paper-inner {
+  padding: 1.2rem 1.4rem 1.15rem 1.45rem;
+}
+
+.gate-sheet .paper-inner {
+  padding: 2.2rem 2.05rem 1.75rem 2.15rem;
+}
+
+.paper-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 0.1rem 0.05rem 0.4rem;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 0.65rem, #000 calc(100% - 0.65rem), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 0.65rem, #000 calc(100% - 0.65rem), transparent 100%);
+}
+
+.paper-inner,
+.paper-scroll,
+.paper-scroll > * {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+#sheet-body {
+  margin: 0;
+}
+
+#sheet-close,
+#receive-close,
+#landing-close,
+.compose-actions,
+#card #more,
+#card #card-continue,
+#drift-cta,
+#drift-reread,
+.islet-actions {
+  flex: 0 0 auto;
+  margin-top: 0.45rem;
+}
+
+#sheet-close,
+#receive-close,
+#landing-close {
+  align-self: flex-start;
+}
+
+.compose-panel .drift-kicker { margin: 0.1rem 0 0.35rem 0; }
+
+.journal-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.journal-head { flex: 0 0 auto; }
+.journal-page .paper-scroll { flex: 1 1 auto; }
+
+@media (pointer: coarse) {
+  #card, #drift, #islet-card {
+    bottom: calc(var(--safe-b) + 8.2rem);
+    max-height: calc(100dvh - var(--safe-t) - var(--safe-b) - 8.2rem - 5.8rem);
+  }
+}
+
+body.is-sheet-open #chrome,
+body.is-journal-open #chrome,
+body.is-modal #chrome {
+  pointer-events: none;
+}
+
+/* Keep the open paper itself clickable / scrollable even while chrome is inert. */
+body.is-sheet-open #sheet,
+body.is-journal-open #journal,
+body.is-modal #compose,
+body.is-modal #receive,
+body.is-modal #landing {
+  pointer-events: auto;
+}
