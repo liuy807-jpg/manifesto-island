@@ -12,6 +12,7 @@ import { LiveBridge, liveUrlFromSearch } from "./LiveBridge.js";
 import { Presence } from "./Presence.js";
 import { islandHeight } from "./terrain.js";
 import { DriftFlow } from "./DriftFlow.js";
+import { PlaceLabels } from "./PlaceLabels.js";
 
 export class Experience {
   constructor(canvas, ui) {
@@ -28,6 +29,10 @@ export class Experience {
     this._lastTouchSend = 0;
     this._journalOpen = false;
     this._journalKnown = 0;
+    this.chapter = "approach";
+    this._lastSheetDef = null;
+    this._sheetCloseTimer = 0;
+    this._rsKey = "";
   }
 
   async init() {
@@ -76,8 +81,9 @@ export class Experience {
 
     this.post = new Post(renderer, scene, camera, "off");
     this._resize();
-    window.addEventListener("resize", () => this._resize());
-    if (window.visualViewport) window.visualViewport.addEventListener("resize", () => this._resize());
+    this._onResize = () => this._resize();
+    window.addEventListener("resize", this._onResize);
+    window.visualViewport?.addEventListener("resize", this._onResize);
 
     const live = liveUrlFromSearch();
     if (live) {
@@ -93,6 +99,9 @@ export class Experience {
     this._renderJournal();
     this.drift = new DriftFlow(this);
     this.drift.init().catch((err) => console.warn("Drift init failed", err));
+    this.labels = new PlaceLabels(this.camera, this.canvas, this.stations, this.ui.labels);
+    this._bindViewportGuards();
+    this._bindChapters();
     this._installDebug();
     this.player.camDist = PLAYER.camDist;
     this.player.camHeight = PLAYER.camHeight;
@@ -111,7 +120,15 @@ export class Experience {
       ui.mute.setAttribute("aria-pressed", muted ? "true" : "false");
       ui.mute.classList.toggle("is-muted", muted);
     });
-    ui.more?.addEventListener("click", () => this._openSheet());
+    const openSheet = (e) => {
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
+      this._openSheet();
+    };
+    ui.more?.addEventListener("click", openSheet);
+    ui.more?.addEventListener("pointerup", (e) => {
+      if (e.pointerType === "touch") openSheet(e);
+    });
     ui.sheetClose?.addEventListener("click", () => this._closeSheet());
     ui.sheet?.addEventListener("click", (e) => {
       if (e.target === ui.sheet) this._closeSheet();
@@ -280,6 +297,17 @@ export class Experience {
   }
 
   async enter() {
+    const gate = document.getElementById("gate");
+    if (gate) {
+      gate.disabled = true;
+      gate.classList.add("is-leaving");
+      gate.setAttribute("aria-hidden", "true");
+      setTimeout(() => {
+        gate.hidden = true;
+        gate.style.display = "none";
+        gate.remove();
+      }, 900);
+    }
     await this.audio.start();
     if (this.ui.mute) this.ui.mute.hidden = false;
     this._awaitingEnter = false;
@@ -358,6 +386,14 @@ export class Experience {
     this.audio.setState({ progress, calm, nearShore: shore });
 
     this._updateHUD(active);
+    const hideLabels = document.body.classList.contains("is-sheet-open")
+      || document.body.classList.contains("is-journal-open")
+      || document.body.classList.contains("is-modal")
+      || document.body.classList.contains("is-cinema")
+      || document.body.classList.contains("is-compose-open")
+      || document.body.classList.contains("is-receive-open")
+      || document.body.classList.contains("is-landing-open");
+    this.labels?.update(clarities, hideLabels);
     this._sendLive(now, active);
 
     if (this.post.enabled && this.post.composer) {
@@ -429,6 +465,7 @@ export class Experience {
     const def = STATIONS.find((s) => s.id === activeId);
     const st = this.reveal.get(activeId);
     this._activeDef = def;
+    this._lastSheetDef = def;
     if (def.isFinale && st.known && this.drift) {
       const handled = this.drift.applyFinaleHUD(activeId, def, st);
       if (handled) {
@@ -490,6 +527,7 @@ export class Experience {
         if (e) exp.drift._openReceive(e);
       },
       openLanding() { exp.drift?._openLanding(); },
+      setChapter(name) { exp.setChapter(name); },
       pullback() {
         exp.player.camDist = 22;
         exp.player.camHeight = 14;
@@ -500,22 +538,41 @@ export class Experience {
     };
   }
 
-  _openSheet() {
-    const def = this._activeDef;
-    if (!def || !this.ui.sheet) return;
-    this.ui.sheetNum.textContent = def.num;
-    this.ui.sheetTitle.textContent = def.headline;
-    this.ui.sheetBody.textContent = def.body;
-    this.ui.sheet.hidden = false;
+  _openSheet(def) {
+    const statement = def || this._activeDef || this._lastSheetDef;
+    if (!statement || !this.ui.sheet) return;
+    this._lastSheetDef = statement;
+    if (this._sheetCloseTimer) {
+      clearTimeout(this._sheetCloseTimer);
+      this._sheetCloseTimer = 0;
+    }
+    if (this._journalOpen) this._setJournal(false);
+    this.ui.sheetNum.textContent = statement.num;
+    this.ui.sheetTitle.textContent = statement.headline;
+    this.ui.sheetBody.textContent = statement.body;
+    const sheet = this.ui.sheet;
+    sheet.hidden = false;
+    sheet.removeAttribute("hidden");
     document.body.classList.add("is-sheet-open");
-    requestAnimationFrame(() => this.ui.sheet.classList.add("is-open"));
+    // Force a layout pass so iOS applies display before the open class (opacity/pointer-events).
+    void sheet.offsetWidth;
+    sheet.classList.add("is-open");
+    const scroller = sheet.querySelector(".paper-scroll");
+    if (scroller) scroller.scrollTop = 0;
+    this.ui.sheetClose?.focus?.({ preventScroll: true });
   }
 
   _closeSheet() {
-    this.ui.sheet?.classList.remove("is-open");
+    const sheet = this.ui.sheet;
+    if (!sheet) return;
+    sheet.classList.remove("is-open");
     document.body.classList.remove("is-sheet-open");
-    setTimeout(() => {
-      if (this.ui.sheet && !this.ui.sheet.classList.contains("is-open")) this.ui.sheet.hidden = true;
+    if (this._sheetCloseTimer) clearTimeout(this._sheetCloseTimer);
+    this._sheetCloseTimer = setTimeout(() => {
+      this._sheetCloseTimer = 0;
+      if (sheet && !sheet.classList.contains("is-open")) {
+        sheet.hidden = true;
+      }
     }, 400);
   }
 
@@ -577,16 +634,139 @@ export class Experience {
     if (msg.name === "sunrise") this.sky.setProgress(1);
   }
 
+  _bindViewportGuards() {
+    const block = (e) => e.preventDefault();
+    document.addEventListener("gesturestart", block, { passive: false });
+    document.addEventListener("gesturechange", block, { passive: false });
+    document.addEventListener("gestureend", block, { passive: false });
+    document.addEventListener("touchmove", (e) => {
+      if (!e.touches || e.touches.length < 2) return;
+      if (!e.target?.closest?.(".paper-scroll, textarea, input")) e.preventDefault();
+    }, { passive: false });
+    let lastTap = 0;
+    this.canvas?.addEventListener("touchend", (e) => {
+      const now = performance.now();
+      if (now - lastTap < 350) e.preventDefault();
+      lastTap = now;
+    }, { passive: false });
+    window.addEventListener("pageshow", (e) => {
+      this._rsKey = "";
+      if (e.persisted) {
+        this.player.camDist = PLAYER.camDist;
+        this.player.camHeight = PLAYER.camHeight;
+        this.player.setCinematic(false);
+        if (!this._awaitingEnter) this.player.setEnabled(true);
+        if (!this._looping) this._startLoop();
+        if (this.audio.ctx && !this.audio.muted) this.audio.ctx.resume?.();
+      }
+      this._resize();
+    });
+    window.addEventListener("orientationchange", () => {
+      this._rsKey = "";
+      setTimeout(() => this._resize(), 80);
+      setTimeout(() => this._resize(), 320);
+    });
+  }
+
+  _bindChapters() {
+    const nav = this.ui.chapters;
+    if (!nav) return;
+    nav.addEventListener("click", (e) => {
+      const btn = e.target.closest?.("[data-chapter]");
+      if (!btn) return;
+      e.preventDefault();
+      this.setChapter(btn.dataset.chapter);
+    });
+  }
+
+  setChapter(name) {
+    const next = name === "drift" || name === "landing" ? name : "approach";
+    this._closeSheet();
+    this._setJournal(false);
+    const drift = this.drift;
+    if (drift) {
+      drift.cinema?.hideProps?.();
+      document.body.classList.remove("is-cinema");
+      drift._setModal?.("compose", false);
+      drift._setModal?.("receive", false);
+      drift._setModal?.("landing", false);
+      drift._closeIslet?.();
+      drift._showDrift(false);
+      if (next !== "drift" && (drift.phase === "compose" || drift.phase === "receive" || drift.phase === "landing" || drift.phase === "cinema" || drift.phase === "teaser")) {
+        drift.phase = "idle";
+      }
+    }
+    this.player.setCinematic(false);
+    this.player.camDist = PLAYER.camDist;
+    this.player.camHeight = PLAYER.camHeight;
+    this.player.walkTarget = null;
+    this.player.keys?.clear?.();
+    this.player.setJoystick(0, 0, false);
+    this._rsKey = "";
+    this._resize();
+
+    this.chapter = next;
+    if (next === "approach") {
+      this.player.camYaw = 0.15;
+      this.player.place(PLAYER.arrival.x, PLAYER.arrival.z, PLAYER.arrival.yaw);
+      this.player.setEnabled(true);
+    } else if (next === "drift") {
+      const boat = STATIONS.find((s) => s.isFinale);
+      if (boat) {
+        const st = this.reveal.get(boat.id);
+        st.known = true;
+        st.clarity = 1;
+        st.scatter = 0;
+        this.player.place(boat.pos[0], boat.pos[1], -0.55);
+        this.player.camYaw = 0.55;
+      }
+      this.player.setEnabled(true);
+      if (drift) {
+        drift.phase = "teaser";
+        drift._fillTeaser?.();
+        drift._showDrift(true);
+        if (this.ui.card) this.ui.card.classList.remove("is-visible", "is-clear", "is-finale");
+      }
+    } else if (next === "landing") {
+      this.player.setEnabled(true);
+      if (drift) {
+        drift._fillTeaser?.();
+        drift._openLanding?.({ localOnly: false, preview: true });
+      }
+    }
+    this._syncChapterUI();
+  }
+
+  _syncChapterUI() {
+    const nav = this.ui.chapters;
+    if (!nav) return;
+    nav.querySelectorAll("[data-chapter]").forEach((btn) => {
+      const on = btn.dataset.chapter === this.chapter;
+      btn.classList.toggle("is-current", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
   _resize() {
-    const vp = window.visualViewport;
-    const w = Math.max(1, Math.floor(vp ? vp.width : window.innerWidth));
-    const h = Math.max(1, Math.floor(vp ? vp.height : window.innerHeight));
+    if (!this.renderer || !this.canvas) return;
+    // Use the layout box of the canvas, never visualViewport.width/height.
+    // On iOS, pinch or double-tap zoom shrinks the visual viewport; sizing
+    // the drawing buffer to that value while CSS stays at the layout size
+    // makes the world look like it is continuously zooming in.
+    const box = this.canvas;
+    const w = Math.max(1, Math.floor(box.clientWidth || document.documentElement.clientWidth || window.innerWidth));
+    const h = Math.max(1, Math.floor(box.clientHeight || document.documentElement.clientHeight || window.innerHeight));
     const cap = this.quality === "high" ? 1.5 : 1;
     const dpr = Math.min(window.devicePixelRatio || 1, cap);
+    const key = `${w}x${h}@${dpr}`;
+    if (key === this._rsKey) return;
+    this._rsKey = key;
     this.renderer.setPixelRatio(dpr);
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
     this.post.setSize?.(w, h, dpr);
+    document.documentElement.style.setProperty("--app-w", `${w}px`);
+    document.documentElement.style.setProperty("--app-h", `${h}px`);
   }
 }

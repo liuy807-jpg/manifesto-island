@@ -161,7 +161,10 @@ export class Player {
   }
 
   _tapToWalk(cx, cy) {
-    this._ndc.set((cx / window.innerWidth) * 2 - 1, -(cy / window.innerHeight) * 2 + 1);
+    const rect = this.canvas.getBoundingClientRect();
+    const rw = rect.width || window.innerWidth || 1;
+    const rh = rect.height || window.innerHeight || 1;
+    this._ndc.set(((cx - rect.left) / rw) * 2 - 1, -((cy - rect.top) / rh) * 2 + 1);
     this.raycaster.setFromCamera(this._ndc, this.camera);
     if (this.stationGroup) {
       const hits = this.raycaster.intersectObject(this.stationGroup, true);

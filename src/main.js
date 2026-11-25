@@ -73,6 +73,8 @@ const ui = {
   isletClose: document.getElementById("islet-close"),
   isletHide: document.getElementById("islet-hide"),
   isletUnhide: document.getElementById("islet-unhide"),
+  labels: document.getElementById("place-labels"),
+  chapters: document.getElementById("chapters"),
 };
 
 const exp = new Experience(canvas, ui);
@@ -98,24 +100,37 @@ if (!exp.renderer) {
   action.textContent = "Tap to come ashore";
   gate.setAttribute("aria-label", "Tap to come ashore");
 
+  const alreadyAshore = (() => {
+    try { return sessionStorage.getItem("island-ashore") === "1"; }
+    catch { return false; }
+  })();
+
   const enter = async () => {
+    if (gate.disabled || gate.classList.contains("is-leaving")) return;
     gate.disabled = true;
     gate.classList.remove("is-ready");
     action.textContent = "Coming ashore";
     gate.classList.add("is-leaving");
+    gate.setAttribute("aria-hidden", "true");
+    try { sessionStorage.setItem("island-ashore", "1"); } catch {}
     await exp.enter();
   };
 
-  gate.addEventListener("click", enter, { once: true });
-  // Keyboard: Enter / Space also starts
-  window.addEventListener("keydown", (e) => {
-    if (gate.classList.contains("is-leaving") || gate.disabled) return;
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      enter();
-      gate.disabled = true;
-    }
-  }, { once: true });
+  if (alreadyAshore) {
+    // Mid-session reload or back-forward: skip the cover so it cannot
+    // come back over the island or an open statement.
+    await enter();
+  } else {
+    gate.addEventListener("click", enter, { once: true });
+    // Keyboard: Enter / Space also starts
+    window.addEventListener("keydown", (e) => {
+      if (gate.classList.contains("is-leaving") || gate.disabled) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        enter();
+      }
+    }, { once: true });
+  }
 }
 }
 

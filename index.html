@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#e8c8d8">
   <meta name="color-scheme" content="light">
   <meta name="robots" content="noindex, nofollow">
@@ -109,6 +109,8 @@
     <p>This piece needs WebGL. Please open it in a current phone or desktop browser.</p>
   </div>
 
+  <div id="place-labels" aria-hidden="true"></div>
+
   <div id="chrome" class="ui-ignore">
     <aside id="hud-place" class="scrap hud-box scrap-place">
       <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
@@ -133,6 +135,19 @@
     </aside>
 
     <div id="hud-right">
+      <nav id="chapters" class="scrap hud-box scrap-chapters" aria-label="Chapters">
+        <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+          <use href="#paper-a" fill="#f7eed8" stroke="#2a2218" stroke-width="2.1" stroke-linejoin="round"/>
+        </svg>
+        <span class="scrap-grain" aria-hidden="true"></span>
+        <span class="tape tape-sm tape-chap" aria-hidden="true"></span>
+        <p class="hud-kicker">Chapters</p>
+        <div class="chapter-list">
+          <button type="button" class="chapter-btn is-current" data-chapter="approach" aria-pressed="true">Approach</button>
+          <button type="button" class="chapter-btn" data-chapter="drift" aria-pressed="false">Drift</button>
+          <button type="button" class="chapter-btn" data-chapter="landing" aria-pressed="false">Landing <span class="coming-soon">coming soon</span></button>
+        </div>
+      </nav>
       <button id="journal-btn" class="scrap hud-box scrap-journal" type="button" aria-label="Journal 0/7" aria-expanded="false">
         <svg class="scrap-bg" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
           <use href="#paper-d" fill="#f4e6cc" stroke="#2a2218" stroke-width="2.2" stroke-linejoin="round"/>
@@ -363,7 +378,7 @@
       <span class="tape tape-tl" aria-hidden="true"></span>
       <div class="paper-inner">
         <div class="paper-scroll">
-          <p class="drift-kicker">Chapter 3 · Preview</p>
+          <p class="drift-kicker">Chapter 3 · Coming soon</p>
           <h2 id="landing-title">Landing</h2>
           <p class="landing-lead">Landing will let a small boat, carrying someone else's line, drift into the room you are standing in. This chapter is still being made. It will open through the camera on your phone.</p>
           <p id="landing-note" hidden>The picture you just wrote is only on this device for now.</p>
